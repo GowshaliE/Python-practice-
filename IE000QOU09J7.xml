@@ -1,0 +1,27 @@
+﻿import csv
+import xmltodict
+import pandas as pd
+with open('/home/gowshali/Desktop/gitlab/pythonlist/IE000QOU09J7.xml','r', encoding='utf-8') as csvfile:
+    filedata = csvfile.read()
+
+data_dict = xmltodict.parse(filedata)
+data_dict = data_dict['root']['worksheet'][1]['Row']
+fieldnames = ['S.No','As Of','Currency','NAV','Securities In Issue','Net Assets','Fund Return Series','Benchmark Return Series']
+fields = []
+for column in data_dict:
+    fields.append({
+        "S.No": column['@index'],
+        "As Of": column['AsOf'],
+        "Currency": column['Currency'],
+        "NAV": column['NAV'],
+        "Securities In Issue": column['SecuritiesInIssue'],
+        "Net Assets": column['NetAssets'],
+        "Fund Return Series": column['FundReturnSeries'],
+        "Benchmark Return Series": column['BenchmarkReturnSeries'],
+    })
+
+with open('xmloutput.csv', 'w', newline='') as csvfile:
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for field in fields:
+        writer.writerow(field)
